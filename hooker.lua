@@ -1,3 +1,111 @@
+-- ===== KEY SYSTEM =====
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+local player = Players.LocalPlayer
+
+local CORRECT_KEY = "ETERIUM"      -- Twój klucz
+local KEY_FILE    = "kicia_key.txt" -- gdzie zapisać klucz
+
+-- Sprawdź zapisany klucz
+local function getSavedKey()
+    if isfile and isfile(KEY_FILE) then
+        return readfile(KEY_FILE)
+    end
+    return nil
+end
+
+-- Zapisz klucz
+local function saveKey(key)
+    if writefile then
+        writefile(KEY_FILE, key)
+    end
+end
+
+-- Proste UI do wpisania klucza
+local function showKeyUI()
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "KeySystem"
+    gui.ResetOnSpawn = false
+    gui.Parent = (gethui and gethui()) or CoreGui
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 300, 0, 160)
+    frame.Position = UDim2.new(0.5, -150, 0.5, -80)
+    frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    frame.BorderSizePixel = 0
+    frame.Parent = gui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = frame
+
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 30)
+    title.Position = UDim2.new(0, 0, 0, 10)
+    title.BackgroundTransparency = 1
+    title.Text = "🔑 Wpisz klucz"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextSize = 18
+    title.Font = Enum.Font.GothamBold
+    title.Parent = frame
+
+    local box = Instance.new("TextBox")
+    box.Size = UDim2.new(0.8, 0, 0, 35)
+    box.Position = UDim2.new(0.1, 0, 0, 50)
+    box.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    box.TextColor3 = Color3.fromRGB(255, 255, 255)
+    box.PlaceholderText = "Wpisz klucz..."
+    box.Text = ""
+    box.TextSize = 16
+    box.Font = Enum.Font.Gotham
+    box.ClearTextOnFocus = false
+    box.Parent = frame
+
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0.8, 0, 0, 35)
+    btn.Position = UDim2.new(0.1, 0, 0, 100)
+    btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    btn.Text = "Zatwierdź"
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 16
+    btn.Font = Enum.Font.GothamBold
+    btn.Parent = frame
+
+    local msg = Instance.new("TextLabel")
+    msg.Size = UDim2.new(1, 0, 0, 20)
+    msg.Position = UDim2.new(0, 0, 1, -25)
+    msg.BackgroundTransparency = 1
+    msg.Text = ""
+    msg.TextColor3 = Color3.fromRGB(255, 80, 80)
+    msg.TextSize = 13
+    msg.Parent = frame
+
+    btn.MouseButton1Click:Connect(function()
+        if box.Text == CORRECT_KEY then
+            saveKey(box.Text)
+            gui:Destroy()
+            -- Odpal główny skrypt
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/mikolajsadzinski-ai/kicia-Hook-v3/main/hooker.lua"))()
+        else
+            msg.Text = "❌ Niepoprawny klucz!"
+            box.Text = ""
+        end
+    end)
+end
+
+-- Sprawdź zapisany klucz
+local saved = getSavedKey()
+if saved == CORRECT_KEY then
+    -- Klucz OK – odpal główny skrypt
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/mikolajsadzinski-ai/kicia-Hook-v3/main/hooker.lua"))()
+else
+    showKeyUI()
+end
+-- ===== KONIEC KEY SYSTEMU =====
+
+-- Dopiero teraz cały kod Kicia Hooker...
+
 if getgenv().KiciaRebuild and getgenv().KiciaRebuild.Unload then
     pcall(getgenv().KiciaRebuild.Unload)
 end
